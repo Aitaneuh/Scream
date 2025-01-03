@@ -15,8 +15,9 @@ async def create_tables():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 description TEXT,
-                elo INTEGER DEFAULT 0,
-                captain_id INTEGER NOT NULL
+                elo TEXT DEFAULT 0,
+                captain_id INTEGER NOT NULL,
+                channel_id INTEGER
             )
         ''')
 
@@ -56,3 +57,42 @@ async def create_tables():
         await db.commit()
 
     await db.close()
+
+async def create_team(user_id: int, team_name: str, description: str, elo: int):
+    db = await get_db_connection()
+    async with db.cursor() as cursor:
+        await cursor.execute('''
+            INSERT INTO teams (name, description, elo, captain_id)
+            VALUES (?, ?, ?, ?)
+        ''', (team_name, description, elo, user_id))
+
+        team_id = cursor.lastrowid
+
+        await cursor.execute('''
+            INSERT INTO team_members (team_id, user_id, is_captain)
+            VALUES (?, ?, ?)
+        ''', (team_id, user_id, 1))
+            
+        await db.commit()
+    await db.close()
+
+async def get_team(user_id):
+    db = await get_db_connection()
+    cursor = await db.execute("""
+        SELECT * 
+        FROM teams 
+        INNER JOIN team_members ON teams.id = team_members.team_id 
+        WHERE team_members.user_id = ?""", (user_id,))
+        
+    team = await cursor.fetchone()
+    if team:
+        return {
+            "id": team[0],
+            "name": team[1],
+            "description": team[2],
+            "elo": team[3],
+            "captain_id": team[4],
+            "channel_id": team[5]
+        }
+    return None  # Explicitly return None if no team is found
+
