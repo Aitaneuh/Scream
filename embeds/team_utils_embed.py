@@ -4,7 +4,7 @@ def get_team_utils_embed():
     embed = discord.Embed(
         title="Team Dashboard",
         description="By clicking the following buttons, you can interact with your team.",
-        color=0xff005a
+        color=0xffa700
     )
     embed.add_field(
         name="Edit Team",

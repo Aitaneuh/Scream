@@ -4,7 +4,7 @@ from discord.ui import Button, View
 from utils.database import *
 from modals.create_team_modal import CreateTeam
 
-class CreateTeamButtons(View):
+class CreateTeamButton(View):
     def __init__(self):
         super().__init__()
 
@@ -17,6 +17,3 @@ class CreateTeamButtons(View):
             await interaction.response.send_modal(CreateTeam())
         else:
             await interaction.response.send_message(f"You are already part of a team : {team['name']}", ephemeral=True)
-
-
-

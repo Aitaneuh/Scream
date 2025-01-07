@@ -26,61 +26,61 @@ class EditAutoScrim(discord.ui.Modal, title="Edit Your Auto Scrim"):
             self.scrim_date = discord.ui.TextInput(
                 label="Date",
                 placeholder="today",
-                max_length=10
+                max_length=30
             )
         else:
             self.scrim_date = discord.ui.TextInput(
                 label="Date",
                 default=date,
-                max_length=10
+                max_length=30
             )
         if self.scrim_time == None:
             self.scrim_time = discord.ui.TextInput(
                 label="Time",
                 placeholder="now",
-                max_length=10
+                max_length=30
             )
         else:
             self.scrim_time = discord.ui.TextInput(
                 label="Time",
                 default=time,
-                max_length=10
+                max_length=30
             )
         if self.scrim_best_of == None:
             self.scrim_best_of = discord.ui.TextInput(
                 label="Best of / Duration",
                 placeholder="bo7 / 1H",
-                max_length=10
+                max_length=30
             )
         else:
             self.scrim_best_of = discord.ui.TextInput(
                 label="Best of / Duration",
                 default=best_of,
-                max_length=10
+                max_length=30
             )
         if self.scrim_game_mode == None:
             self.scrim_game_mode = discord.ui.TextInput(
                 label="Game Mode",
                 placeholder="3s",
-                max_length=10
+                max_length=30
             )
         else:
             self.scrim_game_mode = discord.ui.TextInput(
                 label="Game Mode",
                 default=game_mode,
-                max_length=10
+                max_length=30
             )
         if self.scrim_elo == None:
             self.scrim_elo = discord.ui.TextInput(
                 label="Elo",
                 placeholder="2k2",
-                max_length=10
+                max_length=30
             )
         else:
             self.scrim_elo = discord.ui.TextInput(
                 label="Elo",
                 default=elo,
-                max_length=10
+                max_length=30
             )
 
         self.add_item(self.scrim_date)

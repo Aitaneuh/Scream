@@ -3,13 +3,13 @@ import discord
 from utils.config import *
 from embeds.create_team_embed import get_create_team_embed
 from embeds.team_utils_embed import get_team_utils_embed
-from buttons.create_team_buttons import CreateTeamButtons
+from buttons.create_team_button import CreateTeamButton
 from buttons.utils_buttons import UtilsButtons
 
 async def send_messages():
     create_a_team_channel = bot.get_channel(CREATE_A_TEAM_CHANNEL_ID)
     create_a_team_embed = get_create_team_embed()
-    create_a_team_view = CreateTeamButtons()
+    create_a_team_view = CreateTeamButton()
 
     await create_a_team_channel.purge()
     await create_a_team_channel.send(embed=create_a_team_embed, view=create_a_team_view)

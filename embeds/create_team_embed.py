@@ -4,7 +4,7 @@ def get_create_team_embed():
     embed = discord.Embed(
     title=f"How to create YOUR scream team ?",
     description="Follow this step-by-step guide to get your team up and running.",
-    color=0xff005a
+    color=0x1ddb2a
     )
     embed.add_field(
         name="Step 1: Click the 'Create Your Team' Button",

@@ -5,41 +5,41 @@ from discord import ui
 
 from utils.database import *
 from utils.config import *
+from buttons.scrim_take_button import *
 from messages.your_scrim_message import get_your_scrim_message
-from embeds.your_team_embed import get_your_team_embed
 
 
 db = get_db_connection()
 
 # Modal
-class EditManualScrim(discord.ui.Modal, title="Edit Your Manual Scrim"):
+class SendManualScrim(discord.ui.Modal, title="Send Your Manual Scrim"):
     def __init__(self):
         super().__init__()
 
         self.scrim_date = discord.ui.TextInput(
             label="Date",
             placeholder="today",
-            max_length=10
+            max_length=30
         )
         self.scrim_time = discord.ui.TextInput(
             label="Time",
             placeholder="now",
-            max_length=10
+            max_length=30
         )
         self.scrim_best_of = discord.ui.TextInput(
             label="Best of / Duration",
             placeholder="bo7 / 1H",
-            max_length=10
+            max_length=30
         )
         self.scrim_game_mode = discord.ui.TextInput(
             label="Game Mode",
             placeholder="3s",
-            max_length=10
+            max_length=30
         )
         self.scrim_elo = discord.ui.TextInput(
             label="Elo",
             placeholder="2k2",
-            max_length=10
+            max_length=30
         )
 
         self.add_item(self.scrim_date)
@@ -51,6 +51,13 @@ class EditManualScrim(discord.ui.Modal, title="Edit Your Manual Scrim"):
     async def on_submit(self, interaction: discord.Interaction):
 
         team = await get_team(interaction.user.id)
+
+        team_member_ids = await get_team_members(team['id'])
+
+        #if len(team_member_ids) < 3:
+            #at_least_embed = get_simple_embed("You have to be at least 3 in your team to play scrims.")
+            #await interaction.response.send_message(embed=at_least_embed, ephemeral=True)
+            #return
 
         team_id = team['id']
 
@@ -66,13 +73,17 @@ class EditManualScrim(discord.ui.Modal, title="Edit Your Manual Scrim"):
 
         message = await get_your_scrim_message(scrim)
 
-        scrim_channel = bot.get_channel(SCRIM_CHANNEL_ID)
+        announcement_channel = bot.get_channel(ANNOUNCEMENT_CHANNEL_ID)
 
-        scrim_search_channel = bot.get_channel(SCRIM_SEARCH_CHANNEL_ID)
+        pick_channel = bot.get_channel(PICK_CHANNEL_ID)
 
-        sent_message = await scrim_channel.send(message)
+        announcement_message = await announcement_channel.send(message)
 
-        await sent_message.publish()
+        await announcement_message.publish()
 
-        # await scrim_search_channel.send(message, view=)
+        pick_message = await pick_channel.send(message, view=TakeScrimButton())
+
+        await add_manual_message_id(team_id=team_id, announcement_message_id=announcement_message.id, pick_message_id=pick_message.id)
+
+        await interaction.response.send_message(f"Your scrim request have been send\n\nIn scrims channel : https://discord.com/channels/{interaction.guild.id}/{ANNOUNCEMENT_CHANNEL_ID}/{announcement_message.id}\n\nIn scrims search channel : https://discord.com/channels/{interaction.guild.id}/{PICK_CHANNEL_ID}/{pick_message.id}", ephemeral=True)
 
