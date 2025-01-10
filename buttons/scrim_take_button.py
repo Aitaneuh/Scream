@@ -48,7 +48,7 @@ class TakeScrimButton(View):
 
         final_embed = get_scrim_request_embed(ask_team, roster, scrim_message)
 
-        await captain.send(embed=final_embed, view=ScrimValidationButtons(ask_team=ask_team, scrim_message=scrim_message, scrim_team=scrim_team))
+        await captain.send(embed=final_embed, view=ScrimValidationButtons(ask_team=ask_team, scrim_message=scrim_message, scrim_team=scrim_team, message_id=message_id))
 
         message_sent_embed = get_simple_embed(f"A request have been send to {captain.mention}, the captain of {scrim_team['name']}.")
 

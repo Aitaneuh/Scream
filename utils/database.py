@@ -35,12 +35,11 @@ async def create_tables():
         await cursor.execute('''
             CREATE TABLE IF NOT EXISTS scrims (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                team1_id INTEGER NOT NULL,
-                team2_id INTEGER,
-                requested_by TEXT NOT NULL,
-                status TEXT DEFAULT 'pending',
+                message_id TEXT NOT NULL,
+                team_host_id INTEGER NOT NULL,
+                team_request_id INTEGER NOT NULL,
                 accepted_at TIMESTAMP,
-                scrim_channel TEXT
+                scrim_channel_id TEXT NOT NULL
             )
         ''')
 
@@ -70,15 +69,6 @@ async def create_tables():
                 elo TEXT NOT NULL,
                 announcement_message_id TEXT,
                 pick_message_id,
-                FOREIGN KEY (team_id) REFERENCES teams (id) ON DELETE CASCADE
-            )
-        ''')
-
-        await cursor.execute('''
-            CREATE TABLE IF NOT EXISTS team_stats (
-                team_id INTEGER PRIMARY KEY,
-                wins INTEGER DEFAULT 0,
-                losses INTEGER DEFAULT 0,
                 FOREIGN KEY (team_id) REFERENCES teams (id) ON DELETE CASCADE
             )
         ''')
@@ -366,3 +356,13 @@ async def get_team_members(team_id):
         members = await cursor.fetchall()
         await cursor.close()
         return [member[0] for member in members]
+
+async def create_scrim(message_id, team_host_id, team_request_id, scrim_channel_id):
+    db = await get_db_connection()
+    async with db.cursor() as cursor:
+        await cursor.execute('''
+            INSERT INTO scrims (message_id, team_host_id, team_request_id, accepted_at, scrim_channel_id)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (message_id, team_host_id, team_request_id, datetime.now(), scrim_channel_id))
+        await db.commit()
+    await db.close()
