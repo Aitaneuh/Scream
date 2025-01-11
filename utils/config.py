@@ -7,7 +7,7 @@ load_dotenv()
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-ACTIVITY_NAME = "scrim cause he wants to be better"
+ACTIVITY_NAME = "scrim cause he wants to get better."
 
 activity = discord.Game(name=ACTIVITY_NAME)
 activity.platform = "from his desk"
@@ -36,4 +36,4 @@ TEAM_PROFILES_ID = 1324442211475132576
 
 SCRIM_CATEGORY_ID = 1325095876946956378
 
-SCRIM_REQUEST_CHANNEL_ID = 132444197128831970
+SCRIM_REQUEST_CHANNEL_ID = 1324441971288313970

@@ -9,6 +9,12 @@ from embeds.scrim_accept_embed import get_scrim_accept_embed
 from embeds.new_scrim_embed import get_new_scrim_embed
 from utils.database import create_scrim
 
+class DisabledButtonView(View):
+    def __init__(self):
+        super().__init__()
+        button = Button(label="CLOSE", style=discord.ButtonStyle.gray, disabled=True)
+        self.add_item(button)
+
 class ScrimValidationButtons(View):
     def __init__(self, ask_team, scrim_team, scrim_message, message_id):
         super().__init__()
@@ -19,32 +25,21 @@ class ScrimValidationButtons(View):
 
     @discord.ui.button(label="ACCEPT", style=discord.ButtonStyle.green, custom_id="accept")
     async def accept_scrim(self, interaction: discord.Interaction, button: discord.ui.Button):
-        scrim_request_channel = interaction.guild.get_channel(SCRIM_REQUEST_CHANNEL_ID)
+        guild = bot.get_guild(GUILD_ID)
+        scrim_request_channel = guild.get_channel(SCRIM_REQUEST_CHANNEL_ID)
 
         request_message = await scrim_request_channel.fetch_message(self.message_id)
 
-        components = request_message.components
-        new_components = []
-        for action_row in components:
-            new_row = discord.ui.ActionRow()
-            for item in action_row.children:
-                if isinstance(item, discord.ui.Button):
-                    item.label = "CLOSE"
-                    item.style = discord.ButtonStyle.gray
-                    item.disabled = True
-                new_row.append_item(item)
-            new_components.append(new_row)
-
-        await request_message.edit(components=new_components)
+        disabled_view = DisabledButtonView()
+        await request_message.edit(view=disabled_view)
 
 
         captain_id = self.ask_team['captain_id']
 
         captain = await bot.fetch_user(captain_id)
 
-        category = discord.utils.get(interaction.guild.categories, id=SCRIM_CATEGORY_ID)
+        category = discord.utils.get(guild.categories, id=SCRIM_CATEGORY_ID)
 
-        guild = bot.get_guild(GUILD_ID)
 
         team_host_role = guild.get_role(self.scrim_team['role_id'])
         team_request_role = guild.get_role(self.ask_team['role_id'])
@@ -55,7 +50,7 @@ class ScrimValidationButtons(View):
             team_request_role: discord.PermissionOverwrite(view_channel=True)
         }
 
-        scrim_channel = await interaction.guild.create_text_channel(f"{self.scrim_team['name']} vs {self.ask_team['name']}", category=category, overwrites=overwrites)
+        scrim_channel = await guild.create_text_channel(f"{self.scrim_team['name']} vs {self.ask_team['name']}", category=category, overwrites=overwrites)
 
         await create_scrim(message_id=self.message_id, team_host_id=self.scrim_team['id'], team_request_id=self.ask_team['id'], scrim_channel_id=scrim_channel.id)
 

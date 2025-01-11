@@ -1,4 +1,5 @@
 import aiosqlite
+import datetime
 import os
 
 DATABASE_PATH = os.path.join(os.path.dirname(__file__), '../data/main.db')
@@ -362,7 +363,7 @@ async def create_scrim(message_id, team_host_id, team_request_id, scrim_channel_
     async with db.cursor() as cursor:
         await cursor.execute('''
             INSERT INTO scrims (message_id, team_host_id, team_request_id, accepted_at, scrim_channel_id)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (message_id, team_host_id, team_request_id, datetime.now(), scrim_channel_id))
+            VALUES (?, ?, ?, ?, ?)
+        ''', (message_id, team_host_id, team_request_id, datetime.datetime.now(), scrim_channel_id))
         await db.commit()
     await db.close()
