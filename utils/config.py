@@ -7,10 +7,9 @@ load_dotenv()
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-ACTIVITY_NAME = "scrim cause he wants to get better."
+ACTIVITY_NAME = "scrim because he wants to get better."
 
 activity = discord.Game(name=ACTIVITY_NAME)
-activity.platform = "from his desk"
 bot = commands.Bot(
     command_prefix="!", 
     intents=discord.Intents.all(), 

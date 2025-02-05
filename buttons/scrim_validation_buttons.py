@@ -61,8 +61,9 @@ class ScrimValidationButtons(View):
         accept_embed = get_scrim_accept_embed(host_team=self.scrim_team, scrim_message=self.scrim_message, scrim_channel_id=scrim_channel.id)
         await captain.send(embed=accept_embed)
 
-        confirmation_embed = get_simple_embed("This scrim request has been succesfully accepted.")
+        confirmation_embed = get_simple_embed(f"This scrim request has been succesfully accepted. [Click here](https://discord.com/channels/{GUILD_ID}/{scrim_channel.id}) to go to the scrim channel.")
 
+        await interaction.message.delete()
         await interaction.response.send_message(embed=confirmation_embed, ephemeral=True)
 
 

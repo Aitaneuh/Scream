@@ -17,12 +17,12 @@ def get_new_scrim_embed(team_host, team_request):
     color=0x8d00ff
     )
     embed.add_field(
-        name=f"{team_host['name']} Presention",
+        name=f"{team_host['name']} Presentation",
         value=f"[Click here]({team_host_channel_link})",
         inline=True
     )
     embed.add_field(
-        name=f"{team_request['name']} Presention",
+        name=f"{team_request['name']} Presentation",
         value=f"[Click here]({team_request_channel_link})",
         inline=True
     )

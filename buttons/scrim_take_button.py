@@ -20,6 +20,8 @@ class TakeScrimButton(View):
 
         ask_team_member_ids = await get_team_members(ask_team['id'])
 
+        # TODO remove the comments before PROD
+
         #if len(ask_team_member_ids) < 3:
             #at_least_embed = get_simple_embed("You have to be at least 3 in your team to play scrims.")
             #await interaction.response.send_message(embed=at_least_embed, ephemeral=True)

@@ -367,3 +367,11 @@ async def create_scrim(message_id, team_host_id, team_request_id, scrim_channel_
         ''', (message_id, team_host_id, team_request_id, datetime.datetime.now(), scrim_channel_id))
         await db.commit()
     await db.close()
+
+async def db_leave_team(player_id: int):
+    db = await get_db_connection()
+    async with db.cursor() as cursor:
+        await cursor.execute('''
+            DELETE FROM team_members WHERE user_id = ?''', (player_id,))
+        await db.commit()
+    await db.close()

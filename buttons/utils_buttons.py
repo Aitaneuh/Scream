@@ -3,6 +3,7 @@ from discord.ui import Button, View
 
 from embeds.your_team_embed import get_your_team_embed
 from embeds.simple_embed import get_simple_embed
+from selects.kick_select import KickSelect
 from utils.database import *
 from utils.config import *
 from modals.edit_team_modal import EditTeam
@@ -77,6 +78,8 @@ class UtilsButtons(View):
 
         team_member_ids = await get_team_members(team_id)
 
+        # TODO remove the comments before PROD
+
         #if len(team_member_ids) < 3:
             #at_least_embed = get_simple_embed("You have to be at least 3 in your team to play scrims.")
             #await interaction.response.send_message(embed=at_least_embed, ephemeral=True)
@@ -108,3 +111,50 @@ class UtilsButtons(View):
     async def send_manual_scrim(self, interaction: discord.Interaction, button: discord.ui.Button):
 
         await interaction.response.send_modal(SendManualScrim())
+
+    @discord.ui.button(label="Kick a player", style=discord.ButtonStyle.red, custom_id="kick_player")
+    async def kick_player(self, interaction: discord.Interaction, button: discord.ui.Button):
+
+        team = await get_team(interaction.user.id)
+        team_id = team['id']
+
+        if interaction.user.id != team['captain_id']:
+            interaction.response.send_message("Only the captain of the team is allowed to kick someone.", ephemeral=True)
+            return
+
+        player_ids = await get_team_members(team_id)
+
+        players = []
+
+        for player_id in player_ids:
+            players += bot.fetch_user(player_id)
+
+        KickSelect(captain_id=interaction.user.id, members=players)
+
+
+    @discord.ui.button(label="Leave Team", style=discord.ButtonStyle.red, custom_id="leave_team")
+    async def leave_team(self, interaction: discord.Interaction, button: discord.ui.Button):
+
+        team = await get_team(interaction.user.id)
+        team_id = team['id']
+
+        if interaction.user.id == team['captain_id']:
+            player_ids = await get_team_members(team_id)
+            for player_id in player_ids:
+                team_deleted_embed = get_simple_embed(f"Your captain '{interaction.user.display_name}' deleted {team['name']}.")
+                player = await bot.fetch_user(player_id)
+                player.send(embed=team_deleted_embed)
+            return
+
+            # TODO delete the team in the DB, the channel, the role, the scrim request of this team
+        else:
+            await db_leave_team(interaction.user.id)
+            interaction.user.send(f"You have succesfully left team {team['name']}")
+            team_channel = await bot.get_channel(team['channel_id'])
+            guild = interaction.guild
+            team_role = discord.utils.get(guild.roles, id=team['role_id'])
+            interaction.user.remove_roles(team_role)
+            player_left_embed = get_simple_embed(f"The player '{interaction.user.display_name}' left {team['name']}.")
+            captain = await bot.fetch_user(team['captain_id'])
+            team_channel.send(f"{captain.mention}",embed=player_left_embed)
+            return

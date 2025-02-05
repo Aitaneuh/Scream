@@ -85,5 +85,5 @@ class SendManualScrim(discord.ui.Modal, title="Send Your Manual Scrim"):
 
         await add_manual_message_id(team_id=team_id, announcement_message_id=announcement_message.id, pick_message_id=pick_message.id)
 
-        await interaction.response.send_message(f"Your scrim request have been send\n\nIn scrims channel : https://discord.com/channels/{interaction.guild.id}/{ANNOUNCEMENT_CHANNEL_ID}/{announcement_message.id}\n\nIn scrims search channel : https://discord.com/channels/{interaction.guild.id}/{PICK_CHANNEL_ID}/{pick_message.id}", ephemeral=True)
+        await interaction.response.send_message(f"Your scrim request have been sended\n\nIn scrims channel : https://discord.com/channels/{interaction.guild.id}/{ANNOUNCEMENT_CHANNEL_ID}/{announcement_message.id}\n\nIn scrims search channel : https://discord.com/channels/{interaction.guild.id}/{PICK_CHANNEL_ID}/{pick_message.id}", ephemeral=True)
 

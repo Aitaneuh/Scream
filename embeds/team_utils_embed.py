@@ -43,7 +43,7 @@ def get_team_utils_embed():
     )
     embed.add_field(
         name="Leave the Team",
-        value="Leave the team. If you are the captain, the team will be deleted.",
+        value="Leave the team but if you are the captain of it, the team will be deleted.",
         inline=False
     )
     embed.set_author(name="Written by Aitaneuh")
